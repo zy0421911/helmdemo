@@ -1,0 +1,11 @@
+image: "docker.io/18322764663/k8s_api"
+imageTag: "latest"
+imagePullPolicy: IfNotPresent
+replicaCount: 1
+updateStrategy:
+  type: RollingUpdate
+
+service:
+  type: NodePort
+  port: 8080
+  nodePort: 30000

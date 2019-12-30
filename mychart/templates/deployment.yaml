@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment #对象类型
+metadata:
+  name: {{ template "mydemo.fullname" . }} #名称
+  labels:
+    app: {{ template "mydemo.fullname" . }} #标注 
+spec:
+  replicas: {{ .Values.replicaCount }} #运行容器的副本数，修改这里可以快速修改分布式节点数量
+  selector:
+    matchLabels:
+      app: {{ template "mydemo.fullname" . }}
+  {{- if .Values.updateStrategy }}
+  strategy: {{ toYaml .Values.updateStrategy | nindent 4 }}
+  {{- end }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "mydemo.fullname" . }}
+    spec:
+      containers: #docker容器的配置
+      - name: {{ template "mydemo.fullname" . }}
+        image: "{{ .Values.image }}:{{ .Values.imageTag }}" # pull镜像的地址 ip:prot/dir/images:tag
+        imagePullPolicy: {{ .Values.imagePullPolicy | quote }} #pull镜像时机，
+        ports:
+        - containerPort: {{ .Values.service.port }} #容器对外开放端口
